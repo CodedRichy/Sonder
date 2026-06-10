@@ -1,0 +1,57 @@
+const log = require('../utils/logger');
+const { registerCommands } = require('../handlers/commandHandler');
+const giveawayDb = require('../database/giveaway');
+const { response } = require('../utils/embed');
+const { colors } = require('../utils/constants');
+
+module.exports = {
+  name: 'ready',
+  once: true,
+  async execute(client) {
+    log.info(`Logged in as ${client.user.tag}`);
+    log.info(`Serving ${client.guilds.cache.size} servers`);
+    await registerCommands(client);
+    restoreGiveaways(client);
+  },
+};
+
+function restoreGiveaways(client) {
+  const active = giveawayDb.getAllActive();
+  let restored = 0;
+
+  for (const gw of active) {
+    const remaining = gw.endsAt - Date.now();
+    if (remaining <= 0) {
+      endGiveaway(client, gw);
+    } else {
+      setTimeout(() => endGiveaway(client, gw), remaining);
+      restored++;
+    }
+  }
+
+  if (restored > 0) log.info(`Restored ${restored} giveaway timer(s)`);
+}
+
+async function endGiveaway(client, gw) {
+  const ended = giveawayDb.end(gw.guildId, gw.messageId);
+  if (!ended) return;
+
+  const guild = client.guilds.cache.get(gw.guildId);
+  if (!guild) return;
+
+  const channel = guild.channels.cache.get(gw.channelId);
+  if (!channel) return;
+
+  const winners = giveawayDb.pickWinners(ended, ended.winnerCount || 1);
+  const winnerText = winners.length ? winners.map((id) => `<@${id}>`).join(', ') : 'No valid entries';
+
+  const msg = await channel.messages.fetch(gw.messageId).catch(() => null);
+  if (msg) {
+    await msg.edit({
+      embeds: [response({ client, description: `**🎉 Giveaway Ended**\n\n**Prize:** ${ended.prize}\n**Winner(s):** ${winnerText}`, color: colors.primary })],
+      components: [],
+    }).catch(() => {});
+  }
+
+  channel.send({ content: `🎉 Congratulations ${winnerText}! You won **${ended.prize}**!` }).catch(() => {});
+}

@@ -1,0 +1,103 @@
+const Database = require('better-sqlite3');
+const path = require('path');
+
+const dbPath = path.join(__dirname, '..', '..', 'data', 'sonder.db');
+require('fs').mkdirSync(path.dirname(dbPath), { recursive: true });
+
+const db = new Database(dbPath);
+db.pragma('journal_mode = WAL');
+db.pragma('synchronous = NORMAL');
+
+db.exec(`
+  CREATE TABLE IF NOT EXISTS xp (
+    guild_id TEXT NOT NULL,
+    user_id TEXT NOT NULL,
+    xp INTEGER DEFAULT 0,
+    level INTEGER DEFAULT 0,
+    total_xp INTEGER DEFAULT 0,
+    last_message INTEGER DEFAULT 0,
+    PRIMARY KEY (guild_id, user_id)
+  );
+  CREATE INDEX IF NOT EXISTS idx_xp_guild_user ON xp(guild_id, user_id);
+`);
+
+const stmts = {
+  get: db.prepare('SELECT xp, level, total_xp, last_message FROM xp WHERE guild_id = ? AND user_id = ?'),
+  upsert: db.prepare('INSERT INTO xp (guild_id, user_id, xp, level, total_xp, last_message) VALUES (?, ?, ?, ?, ?, ?) ON CONFLICT(guild_id, user_id) DO UPDATE SET xp = ?, level = ?, total_xp = ?, last_message = ?'),
+  leaderboard: db.prepare('SELECT user_id, level, total_xp FROM xp WHERE guild_id = ? ORDER BY total_xp DESC LIMIT ?'),
+  rank: db.prepare('SELECT COUNT(*) as rank FROM xp WHERE guild_id = ? AND total_xp > (SELECT COALESCE(total_xp, 0) FROM xp WHERE guild_id = ? AND user_id = ?)'),
+};
+
+function xpForLevel(level) {
+  return 5 * (level * level) + 50 * level + 100;
+}
+
+function getMember(guildId, userId) {
+  const row = stmts.get.get(guildId, userId);
+  if (row) return { xp: row.xp, level: row.level, totalXp: row.total_xp, lastMessage: row.last_message };
+  return { xp: 0, level: 0, totalXp: 0, lastMessage: 0 };
+}
+
+function saveMember(guildId, userId, m) {
+  stmts.upsert.run(guildId, userId, m.xp, m.level, m.totalXp, m.lastMessage, m.xp, m.level, m.totalXp, m.lastMessage);
+}
+
+function addXp(guildId, userId, amount) {
+  const m = getMember(guildId, userId);
+  m.xp += amount;
+  m.totalXp += amount;
+
+  let leveledUp = false;
+  while (m.xp >= xpForLevel(m.level)) {
+    m.xp -= xpForLevel(m.level);
+    m.level++;
+    leveledUp = true;
+  }
+
+  saveMember(guildId, userId, m);
+  return { level: m.level, xp: m.xp, needed: xpForLevel(m.level), totalXp: m.totalXp, leveledUp };
+}
+
+function getStats(guildId, userId) {
+  const m = getMember(guildId, userId);
+  return { level: m.level, xp: m.xp, needed: xpForLevel(m.level), totalXp: m.totalXp };
+}
+
+function canEarnXp(guildId, userId, cooldownMs) {
+  const m = getMember(guildId, userId);
+  const now = Date.now();
+  if (now - m.lastMessage < cooldownMs) return false;
+  m.lastMessage = now;
+  saveMember(guildId, userId, m);
+  return true;
+}
+
+function getLeaderboard(guildId, limit = 10) {
+  return stmts.leaderboard.all(guildId, limit).map((r) => ({ userId: r.user_id, level: r.level, totalXp: r.total_xp }));
+}
+
+function setLevel(guildId, userId, level) {
+  const m = { xp: 0, level, totalXp: 0, lastMessage: getMember(guildId, userId).lastMessage };
+  for (let i = 0; i < level; i++) m.totalXp += xpForLevel(i);
+  saveMember(guildId, userId, m);
+  return { level: m.level, xp: m.xp, needed: xpForLevel(m.level), totalXp: m.totalXp };
+}
+
+function setXp(guildId, userId, xp) {
+  const m = { xp: 0, level: 0, totalXp: xp, lastMessage: getMember(guildId, userId).lastMessage };
+  let remaining = xp;
+  while (remaining >= xpForLevel(m.level)) {
+    remaining -= xpForLevel(m.level);
+    m.level++;
+  }
+  m.xp = remaining;
+  saveMember(guildId, userId, m);
+  return { level: m.level, xp: m.xp, needed: xpForLevel(m.level), totalXp: m.totalXp };
+}
+
+function getRank(guildId, userId) {
+  const row = stmts.rank.get(guildId, guildId, userId);
+  return (row?.rank ?? 0) + 1;
+}
+
+module.exports = { addXp, getStats, canEarnXp, getLeaderboard, setLevel, setXp, getRank, xpForLevel };
