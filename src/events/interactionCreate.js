@@ -1,5 +1,6 @@
 const { EmbedBuilder, Collection, ChannelType, PermissionFlagsBits, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const log = require('../utils/logger');
+const { track, promptFeedback } = require('../utils/commandTracker');
 const { colors } = require('../utils/constants');
 const { response, base } = require('../utils/embed');
 const config = require('../config');
@@ -77,7 +78,9 @@ module.exports = {
 
     try {
       await command.execute(interaction);
+      promptFeedback(interaction, interaction.commandName, 'slash');
     } catch (err) {
+      track(interaction.commandName, { userId: interaction.user.id, guildId: interaction.guildId, type: 'slash', feedback: 'errored', error: err.message });
       log.error(`Command ${interaction.commandName} failed:`, err.message);
       const reply = { content: 'Something went wrong.', ephemeral: true };
       if (interaction.replied || interaction.deferred) {

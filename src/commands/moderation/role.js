@@ -6,7 +6,7 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('role')
     .setDescription('Add or remove a role from a member')
-    .addUserOption((o) => o.setName('user').setDescription('Member').setRequired(true))
+    .addUserOption((o) => o.setName('user').setDescription('Member to add/remove role from').setRequired(true))
     .addRoleOption((o) => o.setName('role').setDescription('Role to toggle').setRequired(true))
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles),
 

@@ -9,13 +9,13 @@ module.exports = {
     .setName('mute')
     .setDescription('Timeout a member')
     .addUserOption((o) => o.setName('user').setDescription('Member to mute').setRequired(true))
-    .addStringOption((o) => o.setName('duration').setDescription('Duration (e.g. 30m, 1h, 1d, 1w)').setRequired(true))
+    .addStringOption((o) => o.setName('duration').setDescription('Duration (e.g. 30m, 1h, 1d, 1w) — defaults to 30m'))
     .addStringOption((o) => o.setName('reason').setDescription('Reason for mute'))
     .setDefaultMemberPermissions(PermissionFlagsBits.ModerateMembers),
 
   async execute(interaction) {
     const member = interaction.options.getMember('user');
-    const durationStr = interaction.options.getString('duration');
+    const durationStr = interaction.options.getString('duration') || '30m';
     const reason = interaction.options.getString('reason') || 'No reason provided';
 
     if (reason && reason.length > 1000) {

@@ -7,7 +7,7 @@ module.exports = {
     .setName('modstats')
     .setDescription('View moderation team activity')
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
-    .addUserOption((o) => o.setName('moderator').setDescription('Specific mod to check')),
+    .addUserOption((o) => o.setName('moderator').setDescription('View a specific mod\'s action history')),
 
   async execute(interaction) {
     await interaction.deferReply();

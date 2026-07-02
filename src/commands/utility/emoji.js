@@ -7,7 +7,7 @@ const EMOJI_REGEX = /<(a?):(\w+):(\d+)>/;
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('emoji')
-    .setDescription('Emoji utilities')
+    .setDescription('Manage server emojis — list, stats, steal, enlarge')
     .addSubcommand((sub) =>
       sub.setName('list').setDescription('List all custom emojis in this server')
     )

@@ -5,7 +5,7 @@ const { base } = require('../../utils/embed');
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('server')
-    .setDescription('Server utilities')
+    .setDescription('Server info, icon, and banner')
     .addSubcommand((sub) =>
       sub.setName('info').setDescription('View information about this server')
     )

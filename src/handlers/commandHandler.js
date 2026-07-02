@@ -38,12 +38,48 @@ const PREFIX_ONLY = new Set([
 ]);
 
 const ALIASES = {
-  b: 'ban', k: 'kick', m: 'mute', um: 'unmute',
-  p: 'play', s: 'skip', np: 'nowplaying', q: 'queue', vol: 'volume',
-  w: 'warn', av: 'avatar', ui: 'userinfo', si: 'server',
+  // moderation
+  b: 'ban', k: 'kick', m: 'mute', um: 'unmute', w: 'warn',
+  to: 'mute', timeout: 'mute', unto: 'unmute', untimeout: 'unmute', unm: 'unmute',
+  ub: 'unban', sb: 'softban', sban: 'softban',
+  hm: 'hardmute', im: 'imute', rm: 'rmute',
+  j: 'jail', nick: 'nickname', nn: 'nickname',
+  clear: 'purge', clr: 'purge', del: 'purge', prune: 'purge', c: 'purge',
+  l: 'lock', sp: 'selfpurge', sm: 'slowmode',
+  bl: 'banlist', ml: 'mutelist', ms: 'modstats', hist: 'history',
+  mlog: 'modlog', dm: 'drag', n: 'note',
+  wl: 'warn',
+
+  // music
+  p: 'play', pl: 'play', s: 'skip', np: 'nowplaying', q: 'queue', vol: 'volume',
+  pa: 'pause', resume: 'pause', sh: 'shuffle', lp: 'loop',
+  st: 'stop', dc: 'stop', leave: 'stop', disconnect: 'stop',
+
+  // economy
   lb: 'leaderboard', bal: 'bank', dep: 'deposit', wd: 'withdraw',
-  purge: 'purge', clr: 'purge', del: 'purge',
-  lvl: 'rank', xp: 'rank',
+  pay: 'transfer', give: 'transfer', send: 'transfer',
+  wallet: 'bank', store: 'shop', steal: 'rob',
+  bj: 'blackjack', cf: 'coinflip', inv: 'inventory', d: 'daily',
+
+  // leveling
+  lvl: 'rank', xp: 'rank', xlb: 'xpleaderboard', sl: 'setlevel',
+
+  // utility
+  h: 'help', av: 'avatar', pfp: 'avatar', pic: 'avatar',
+  ui: 'userinfo', whois: 'userinfo', info: 'userinfo',
+  si: 'server', serverinfo: 'server', sinfo: 'server',
+  members: 'membercount', mc: 'membercount',
+  ri: 'roleinfo', bi: 'botinfo', sn: 'snipe',
+  ga: 'giveaway', rem: 'remind', tz: 'timezone',
+  calc: 'calculate', def: 'define', gh: 'github', tr: 'translate',
+  e: 'emoji', emote: 'emoji',
+
+  // fun
+  t: 'trivia', tod: 'truthordare', tord: 'truthordare',
+  uwu: 'uwuify', '8b': '8ball',
+
+  // ai
+  r: 'roast', sum: 'summarize',
 };
 
 function loadCommands(client) {

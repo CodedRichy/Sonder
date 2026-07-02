@@ -2,6 +2,7 @@ const { Collection } = require('discord.js');
 const config = require('../config');
 const store = require('../database/store');
 const log = require('../utils/logger');
+const { track, promptFeedback } = require('../utils/commandTracker');
 const xpStore = require('../database/xp');
 const { response } = require('../utils/embed');
 const { colors } = require('../utils/constants');
@@ -284,7 +285,9 @@ module.exports = {
         return;
       }
       await command.execute(ctx);
+      promptFeedback(ctx, commandName, 'prefix');
     } catch (err) {
+      track(commandName, { userId: message.author.id, guildId: message.guildId, type: 'prefix', feedback: 'errored', error: err.message });
       log.error(`Prefix command ${commandName} failed:`, err.message);
       await message.reply({ content: 'Something went wrong.' }).catch(() => {});
     }

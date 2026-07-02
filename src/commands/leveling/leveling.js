@@ -6,17 +6,17 @@ const store = require('../../database/store');
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('leveling')
-    .setDescription('Configure the leveling system')
+    .setDescription('Configure the XP leveling system')
     .addSubcommand((sub) =>
-      sub.setName('toggle').setDescription('Enable or disable leveling')
-        .addStringOption((o) => o.setName('state').setDescription('on or off').setRequired(true).addChoices(
+      sub.setName('toggle').setDescription('Turn XP gain on or off for this server')
+        .addStringOption((o) => o.setName('state').setDescription('Enable or disable the leveling system').setRequired(true).addChoices(
           { name: 'On', value: 'on' },
           { name: 'Off', value: 'off' },
         ))
     )
     .addSubcommand((sub) =>
-      sub.setName('channel').setDescription('Set level-up notification channel')
-        .addChannelOption((o) => o.setName('channel').setDescription('Channel (leave empty for current)').addChannelTypes(ChannelType.GuildText))
+      sub.setName('channel').setDescription('Set where level-up announcements go')
+        .addChannelOption((o) => o.setName('channel').setDescription('Channel for announcements (empty = same channel as message)').addChannelTypes(ChannelType.GuildText))
     )
     .addSubcommand((sub) => sub.setName('settings').setDescription('View current leveling settings'))
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild),

@@ -20,13 +20,13 @@ module.exports = {
     )
     .addSubcommand((s) =>
       s.setName('force')
-        .setDescription('Force a nickname on a user')
+        .setDescription('Lock a nickname on a user — they can\'t change it')
         .addUserOption((o) => o.setName('user').setDescription('Target user').setRequired(true))
         .addStringOption((o) => o.setName('nickname').setDescription('Forced nickname').setRequired(true).setMaxLength(32))
     )
     .addSubcommand((s) =>
       s.setName('unforce')
-        .setDescription('Remove a forced nickname')
+        .setDescription('Remove a forced nickname — user can change it again')
         .addUserOption((o) => o.setName('user').setDescription('Target user').setRequired(true))
     ),
 

@@ -1,3 +1,4 @@
+const { Events } = require('discord.js');
 const log = require('../utils/logger');
 const { registerCommands } = require('../handlers/commandHandler');
 const giveawayDb = require('../database/giveaway');
@@ -5,7 +6,7 @@ const { response } = require('../utils/embed');
 const { colors } = require('../utils/constants');
 
 module.exports = {
-  name: 'ready',
+  name: Events.ClientReady,
   once: true,
   async execute(client) {
     log.info(`Logged in as ${client.user.tag}`);

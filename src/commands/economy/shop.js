@@ -20,7 +20,7 @@ module.exports = {
       s.setName('buy')
         .setDescription('Buy an item')
         .addStringOption((o) =>
-          o.setName('item').setDescription('Item to buy').setRequired(true)
+          o.setName('item').setDescription('Item name from the shop to purchase').setRequired(true)
             .addChoices(...ITEMS.map((i) => ({ name: i.name, value: i.id })))
         )
     ),
