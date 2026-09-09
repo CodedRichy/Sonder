@@ -4,7 +4,7 @@
 
 **An AI-native Discord community OS.**
 
-Full-featured Discord bot with music, moderation, economy, trivia, leveling, and AI conversations -- backed by a web dashboard for server management.
+Discord bot with music, moderation, economy, trivia, leveling, and AI conversations. A web dashboard handles server management.
 
 [![Node.js 20+](https://img.shields.io/badge/node-20+-339933?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org)
 [![discord.js 14](https://img.shields.io/badge/discord.js-14-5865F2?style=flat-square&logo=discord&logoColor=white)](https://discord.js.org)
@@ -17,25 +17,25 @@ Full-featured Discord bot with music, moderation, economy, trivia, leveling, and
 ## Features
 
 ### Music
-Full music player with queue management, YouTube playback, volume control, and voice channel integration via discord-player.
+Plays YouTube audio into a voice channel, with queue management and volume control. Runs on discord-player.
 
 ### Moderation
 Kick, ban, mute, warn, purge, slowmode, lockdown. Configurable auto-mod with logging channels.
 
 ### Economy
-Virtual currency system with daily rewards, work commands, shop, inventory, gambling, and leaderboards. Backed by PostgreSQL.
+Virtual currency with daily rewards, work commands, shop, inventory, gambling, and leaderboards. Balances live in PostgreSQL.
 
 ### AI Conversations
-OpenAI-powered chat with context retention. Natural conversations without slash command prefixes.
+OpenAI chat that holds context across messages. It answers without a slash command prefix.
 
 ### Leveling & XP
-Message-based XP system with level roles, rank cards (canvas-rendered), and per-server leaderboards.
+Messages earn XP. Level roles, canvas-rendered rank cards, and per-server leaderboards.
 
 ### Trivia & Games
-Interactive trivia, word games, and community challenges with economy rewards.
+Trivia, word games, and community challenges. They pay out in economy currency.
 
 ### Web Dashboard
-React-based admin panel with Discord OAuth login. Server settings, moderation logs, economy management, and analytics.
+React admin panel behind a Discord OAuth login. Server settings, moderation logs, economy management, and analytics.
 
 ## Quick Start
 
