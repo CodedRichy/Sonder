@@ -11,7 +11,7 @@ A multipurpose Discord bot in Node.js with moderation, economy, leveling, music 
 
 ## Status
 
-Pre-launch, version 0.1.0, built for personal use. There is no test suite. Guild and economy state goes through SQLite (`better-sqlite3`); PostgreSQL and Redis are optional. Commands are still registered per guild, not globally.
+Pre-launch, version 0.1.0. There is no test suite. Guild and economy state goes through SQLite (`better-sqlite3`); PostgreSQL and Redis are optional. Commands are still registered per guild, not globally.
 
 ## Stack
 
